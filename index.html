@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d1b16" />
+  <title>TIP7 — 7 Minute Mobility Challenge</title>
+  <style>
+    :root {
+      --bg:#0d1b16; --panel:#14251e; --panel2:#193128; --text:#f3f4ef; --muted:#aab9b1;
+      --accent:#d7f171; --accent2:#88a84b; --line:rgba(255,255,255,.10); --danger:#ef947d;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button{font:inherit}
+    .shell{width:min(100%,560px);margin:0 auto;min-height:100dvh;padding:max(18px,env(safe-area-inset-top)) 18px max(24px,env(safe-area-inset-bottom));display:flex;flex-direction:column}
+    .brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+    .logo{font-weight:900;letter-spacing:-.05em;font-size:28px}.logo span{color:var(--accent)}
+    .sound{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:9px 12px;cursor:pointer}
+    .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800}
+    h1{font-size:42px;line-height:.96;letter-spacing:-.055em;margin:10px 0 14px;max-width:480px}
+    h2{font-size:32px;letter-spacing:-.04em;margin:6px 0}
+    p{color:var(--muted);line-height:1.55;margin:0}
+    .hero{padding:12px 0 22px}
+    .promise{font-size:18px;color:var(--text);max-width:460px}
+    .days{display:grid;gap:10px;margin:24px 0}
+    .day-card{width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .day-card.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+    .day-card strong{display:block;font-size:18px}.day-card small{display:block;color:var(--muted);margin-top:3px}.check{color:var(--accent);font-weight:900}
+    .primary{width:100%;border:0;border-radius:16px;background:var(--accent);color:#132016;font-weight:900;padding:17px 20px;font-size:17px;cursor:pointer}
+    .secondary{border:1px solid var(--line);border-radius:14px;background:transparent;color:var(--text);padding:12px 14px;font-weight:700;cursor:pointer}
+    .note{font-size:12px;margin-top:14px;text-align:center;color:#7f9087}
+    .hidden{display:none!important}
+    .session{flex:1;display:flex;flex-direction:column}
+    .progress-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:var(--muted);font-size:13px}
+    .track{height:6px;background:rgba(255,255,255,.09);border-radius:99px;overflow:hidden}.fill{height:100%;background:var(--accent);width:0%;transition:width .25s linear}
+    .phase{margin-top:28px;text-align:center}.phase .eyebrow{margin-bottom:8px}
+    .counter{font-size:92px;line-height:1;font-weight:900;letter-spacing:-.07em;margin:20px 0 8px;font-variant-numeric:tabular-nums}
+    .unit{font-size:14px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.12em}
+    .exercise-card{margin-top:24px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px}
+    .exercise-card h2{margin:0 0 10px}.how{font-size:16px;color:var(--text);line-height:1.55}.feel{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}.feel strong{color:var(--accent)}
+    .next{margin-top:14px;color:var(--muted);font-size:13px}.next strong{color:var(--text)}
+    .controls{margin-top:auto;padding-top:24px;display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:8px}.controls button{min-height:48px}
+    .pause{background:var(--panel2);border-color:var(--line)}
+    .transition .counter{color:var(--accent)}.transition .exercise-card{border-color:rgba(215,241,113,.35)}
+    .complete{padding-top:8vh;text-align:center}.medal{font-size:64px;margin-bottom:14px}.complete h1{margin-left:auto;margin-right:auto}.complete .summary{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;margin:28px 0;text-align:left}
+    .checkin{margin-top:24px}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 20px}.choice{background:var(--panel);border:1px solid var(--line);border-radius:14px;color:var(--text);padding:14px 8px;cursor:pointer;font-weight:800}.choice.selected{border-color:var(--accent);color:var(--accent)}
+    .footer{margin-top:26px;color:#6f8178;font-size:11px;text-align:center;line-height:1.5}
+    @media(max-width:390px){h1{font-size:36px}.counter{font-size:78px}.exercise-card{padding:18px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="brand"><div class="logo">TIP<span>7</span></div><button class="sound" id="soundBtn" aria-label="Toggle sound">🔊 Sound</button></header>
+
+    <section id="home">
+      <div class="hero">
+        <div class="eyebrow">3 Day Mobility Challenge</div>
+        <h1>7 minutes.<br>Move better for golf.</h1>
+        <p class="promise">Press start. TIP7 handles the sequence, the clock and the transitions. You just move.</p>
+      </div>
+      <div class="days" id="dayList"></div>
+      <button class="primary" id="startBtn">START DAY 1</button>
+      <p class="note">12 movements · 30 sec each · 10 sec changeovers</p>
+      <p class="footer">Move only through a comfortable, pain-free range. TIP7 is a mobility routine, not medical or rehabilitation advice.</p>
+    </section>
+
+    <section id="session" class="session hidden">
+      <div class="progress-head"><span id="dayLabel"></span><span id="stepLabel"></span></div>
+      <div class="track"><div class="fill" id="progressFill"></div></div>
+      <div class="phase" id="phaseWrap">
+        <div class="eyebrow" id="phaseLabel">MOVE</div>
+        <div class="counter" id="timer">30</div>
+        <div class="unit">seconds</div>
+      </div>
+      <article class="exercise-card">
+        <h2 id="exerciseName"></h2>
+        <div class="how" id="exerciseHow"></div>
+        <div class="feel" id="exerciseFeel"></div>
+        <div class="next" id="nextUp"></div>
+      </article>
+      <div class="controls">
+        <button class="secondary" id="backBtn">← Back</button>
+        <button class="secondary pause" id="pauseBtn">Pause</button>
+        <button class="secondary" id="skipBtn">Skip →</button>
+      </div>
+    </section>
+
+    <section id="complete" class="complete hidden">
+      <div class="medal">✓</div>
+      <div class="eyebrow" id="completeEyebrow">DAY COMPLETE</div>
+      <h1 id="completeTitle">You moved.</h1>
+      <p id="completeCopy">Seven-ish minutes invested in moving better for golf.</p>
+      <div class="summary" id="summary"></div>
+      <div class="checkin">
+        <div class="eyebrow">TIP CHECK-IN</div>
+        <h2>How do you feel?</h2>
+        <div class="choices" id="feelChoices">
+          <button class="choice" data-feel="Tighter">Tighter</button>
+          <button class="choice" data-feel="Same">Same</button>
+          <button class="choice" data-feel="Looser">Looser</button>
+        </div>
+      </div>
+      <button class="primary" id="doneBtn">DONE</button>
+    </section>
+  </main>
+
+<script>
+const days = [
+  { title:'MOVE', subtitle:'Find your range', exercises:[
+    ['Cat-Cow','Start on hands and knees. Slowly round your back toward the ceiling and let your head drop. Then reverse: gently lower your belly, lift your chest and look slightly forward. Keep flowing between the two positions.','Feel your whole spine flexing and extending.'],
+    ['Thread the Needle','On hands and knees, slide your right arm underneath your left arm as your chest rotates toward the floor. Return and reach the right hand toward the ceiling. Switch sides halfway.','Feel upper- and mid-back rotation, not a twist forced through your lower back.'],
+    ['Wrist Rocks','Stay on hands and knees with fingers pointing forward. Keep your palms down and gently move your shoulders forward over your hands, then back. Keep the range small and comfortable.','Feel a gentle stretch through your wrists and forearms.'],
+    ["World's Greatest Stretch",'Step your right foot forward into a long lunge. Put your left hand on the floor or a support. Rotate your chest toward the right knee and reach your right hand upward. Switch sides halfway.','Feel your hip flexor, groin and upper-back rotation.'],
+    ['90/90 Hip Switches','Sit with knees bent and feet slightly wider than your hips. Drop both knees gently to the right, return through center, then drop them left. Stay tall and move smoothly.','Feel the hips rotating internally and externally. Never force your knees toward the floor.'],
+    ['Half-Kneeling Hip Flexor','Right knee down, left foot forward. Get tall, gently tuck your pelvis under and move forward slightly. Switch sides halfway. Avoid arching your lower back to find more range.','Feel the front of the hip on the kneeling side.'],
+    ['Deep Squat Hold + Shift','Stand around shoulder width and sit into a comfortable squat. Hold a chair if helpful. At the bottom, gently shift your weight left and right. Depth does not matter.','Feel ankles, groin and hips opening.'],
+    ['Standing Hamstring Sweep','Place one heel slightly in front with the leg fairly straight. Hinge at your hips and sweep your hands toward the toes. Stand and alternate legs. Keep it moving rather than holding.','Feel the back of the legs without yanking into the stretch.'],
+    ['Standing Shoulder Slides','Stand tall with arms in a goalpost shape. Slowly slide your arms upward, then down, while keeping your ribs from flaring. Use a wall if you like.','Feel shoulders and upper back moving freely.'],
+    ['Golf Posture — T-Spine Rotation','Take your golf posture and cross your arms over your chest. Keep the lower body relatively quiet while you rotate your chest right, center, then left.','Feel the torso turning over a stable pelvis.'],
+    ['Golf Posture — Hip Rotation','Stay in golf posture. Keep your chest relatively quiet while gently rotating your belt buckle right and left. The movement can be small.','Feel your hips rotating underneath your torso.'],
+    ['Flowing Golf Turn','Stay in address posture with arms crossed. Make a slow backswing turn, flow through address, then into a balanced follow-through. No speed and no swing thoughts.','Notice how freely your body turns now compared with the start.']
+  ]},
+  { title:'OPEN', subtitle:'Create more space', exercises:[
+    ['Cat-Cow','Start on hands and knees. Slowly round your back, then reverse by gently lowering the belly and lifting the chest. Keep the movement easy and continuous.','Feel movement travel through your whole spine.'],
+    ['Open Book','Lie on your side with knees bent together and arms straight in front. Open the top arm across your body as your chest rotates. Keep the knees stacked. Switch sides halfway.','Feel rotation through your upper and mid back.'],
+    ['Wrist Rotations + Prayer Stretch','Slowly circle both wrists for the first half. Then bring palms together in front of your chest and gently lower your hands while keeping the palms connected.','Feel gentle motion and length through wrists and forearms.'],
+    ['Adductor Rock-Back','Start on hands and knees. Extend one leg out to the side with the foot supported. Push your hips gently backward, then return. Switch sides halfway.','Feel the inner thigh and groin lengthen.'],
+    ['90/90 Hip Switches','Sit tall with knees bent and feet wide. Let both knees rotate to one side, return through center and move to the other. Keep it smooth.','Feel internal and external rotation at the hips.'],
+    ['Hip Flexor + Reach','Half-kneel with one foot forward. Gently tuck the pelvis, then reach the arm on the kneeling side overhead and slightly across. Switch halfway.','Feel the front of the hip and the side of your torso.'],
+    ['Squat Pry','Sit into a comfortable squat, using support if needed. Place elbows gently inside the knees and make small side-to-side shifts. Do not force depth.','Feel ankles, hips and groin gradually open.'],
+    ['Calf + Ankle Rocks','Face a wall or support in a staggered stance. Keep the front heel down while guiding that knee forward over the toes, then ease back. Switch sides halfway.','Feel the ankle moving and the calf lengthening.'],
+    ['Standing Side Bend + Reach','Stand tall. Reach one arm overhead and gently lengthen up and over to the opposite side. Return and alternate. Avoid collapsing forward.','Feel length along the side of your torso.'],
+    ['Golf Posture — T-Spine Rotation','Take golf posture, arms crossed. Keep the lower body relatively quiet and rotate your chest right, center and left.','Feel torso rotation independent of the pelvis.'],
+    ['Golf Posture — Hip Rotation','Stay in golf posture. Keep the chest fairly quiet and rotate the pelvis right and left. Keep the motion controlled.','Feel the pelvis moving independently under the torso.'],
+    ['Flowing Golf Turn','Flow slowly from address to backswing, through address and into a balanced finish. Let the movement feel athletic rather than technical.','Notice whether you have a little more space and freedom in the turn.']
+  ]},
+  { title:'ROTATE', subtitle:'Move like a golfer', exercises:[
+    ['Cat-Cow','On hands and knees, flow from a rounded spine into a gently extended spine. Keep breathing and let the range come naturally.','Feel the full spine wake up.'],
+    ['Thread the Needle','From hands and knees, thread one arm underneath the other and rotate the chest toward the floor. Return and reach upward. Switch halfway.','Feel rotation through your upper back.'],
+    ["World's Greatest Stretch",'Step into a long lunge. Support one hand, rotate the chest toward the forward knee and reach the other arm upward. Switch halfway.','Feel hips, groin and thoracic rotation working together.'],
+    ['Adductor Rock-Back','From hands and knees extend one leg sideways. Gently rock the hips backward and return. Switch halfway.','Feel the inner thigh lengthen without forcing it.'],
+    ['90/90 Hip Switches','Sit tall with knees bent and feet wide. Rotate both knees side to side in a controlled rhythm. Use your hands behind you for support if needed.','Feel clean hip rotation rather than forcing range.'],
+    ['Hip Flexor + Overhead Reach','Half-kneel, tuck the pelvis gently and reach the arm on the kneeling side overhead and slightly across. Switch halfway.','Feel length through the front of the hip and torso.'],
+    ['Deep Squat + Rotation','Sit into a comfortable supported squat. Keep one hand supported and rotate the other arm and chest upward. Alternate sides. Come higher if needed.','Feel hips and upper back working together.'],
+    ['Ankle Rocks','In a staggered stance, keep the front heel planted and guide the knee forward over the toes, then back. Switch halfway.','Feel controlled ankle range with the heel staying down.'],
+    ['Golf Posture — Shoulder Rotation','Take golf posture and place fingertips on your shoulders. Rotate the shoulders right and left while trying to keep the pelvis relatively stable.','Feel upper-body rotation and separation.'],
+    ['Golf Posture — Pelvis Rotation','Stay in golf posture. Keep the chest relatively quiet and rotate the pelvis right and left beneath it.','Feel lower-body rotation and separation.'],
+    ['Backswing → Hold','Golf posture, arms crossed. Turn slowly into your backswing, hold for two seconds, return to address, and repeat. Stay balanced rather than chasing range.','Notice whether you can turn without swaying or standing up.'],
+    ['Full Golf Rotation','Let everything move now. Flow from address to backswing, through and into a tall, balanced finish. Keep it slow and fluid.','This is the payoff: notice how free the complete motion feels.']
+  ]}
+];
+
+const $ = id => document.getElementById(id);
+let selectedDay = Math.min(Number(localStorage.getItem('tip7-selected')||0),2);
+let step=0, remaining=30, phase='move', running=false, ticker=null, soundOn=localStorage.getItem('tip7-sound')!=='off';
+let wakeLock=null;
+
+function completed(){ try{return JSON.parse(localStorage.getItem('tip7-complete')||'{}')}catch{return {}} }
+function renderHome(){
+  $('dayList').innerHTML=days.map((d,i)=>`<button class="day-card ${i===selectedDay?'active':''}" data-day="${i}"><span><strong>DAY ${i+1} — ${d.title}</strong><small>${d.subtitle}</small></span><span class="check">${completed()[i]?'✓':'→'}</span></button>`).join('');
+  document.querySelectorAll('.day-card').forEach(b=>b.onclick=()=>{selectedDay=Number(b.dataset.day);localStorage.setItem('tip7-selected',selectedDay);renderHome()});
+  $('startBtn').textContent=`START DAY ${selectedDay+1}`;
+  $('soundBtn').textContent=soundOn?'🔊 Sound':'🔇 Muted';
+}
+
+function beep(freq=760,duration=.11){
+  if(!soundOn) return;
+  try{ const A=window.AudioContext||window.webkitAudioContext; const c=beep.ctx||(beep.ctx=new A()); if(c.state==='suspended')c.resume(); const o=c.createOscillator(),g=c.createGain(); o.frequency.value=freq; g.gain.setValueAtTime(.16,c.currentTime); g.gain.exponentialRampToValueAtTime(.001,c.currentTime+duration); o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+duration); }catch(e){}
+}
+function vibrate(pattern=40){ if(navigator.vibrate) navigator.vibrate(pattern) }
+async function lockScreen(){ try{ if('wakeLock' in navigator) wakeLock=await navigator.wakeLock.request('screen') }catch(e){} }
+
+function showSession(){ $('home').classList.add('hidden');$('complete').classList.add('hidden');$('session').classList.remove('hidden') }
+function updateSession(){
+  const d=days[selectedDay], ex=d.exercises[step];
+  $('dayLabel').textContent=`DAY ${selectedDay+1} · ${d.title}`;
+  $('stepLabel').textContent=`${step+1} / ${d.exercises.length}`;
+  $('timer').textContent=remaining;
+  $('phaseLabel').textContent=phase==='move'?'MOVE':'CHANGE';
+  $('phaseWrap').classList.toggle('transition',phase==='change');
+  $('exerciseName').textContent=phase==='move'?ex[0]:(d.exercises[step+1]?.[0]||'Finish');
+  $('exerciseHow').textContent=phase==='move'?ex[1]:(d.exercises[step+1]?`Get ready for ${d.exercises[step+1][0]}. Reset your position, breathe, and begin when the beep sounds.`:'One more breath. You are done.');
+  $('exerciseFeel').innerHTML=phase==='move'?`<strong>FEEL:</strong> ${ex[2]}`:'<strong>RESET:</strong> Relax. No rushing between movements.';
+  $('nextUp').innerHTML=phase==='move' && d.exercises[step+1]?`Next: <strong>${d.exercises[step+1][0]}</strong>`:'';
+  const total=d.exercises.length*40-10;
+  const elapsed=step*40 + (phase==='move'?(30-remaining):(30+(10-remaining)));
+  $('progressFill').style.width=`${Math.min(100,Math.max(0,elapsed/total*100))}%`;
+  $('pauseBtn').textContent=running?'Pause':'Resume';
+}
+
+function startDay(){
+  try{ const A=window.AudioContext||window.webkitAudioContext; if(!beep.ctx&&A)beep.ctx=new A(); beep.ctx?.resume(); }catch(e){}
+  step=0;phase='move';remaining=30;running=true;showSession();lockScreen();beep(880,.13);updateSession();startTicker();
+}
+function startTicker(){ clearInterval(ticker); ticker=setInterval(()=>{ if(!running)return; remaining--; if(remaining<=3&&remaining>0)beep(520,.05); if(remaining<=0)advancePhase(); updateSession(); },1000) }
+function advancePhase(){
+  const count=days[selectedDay].exercises.length;
+  if(phase==='move'){
+    if(step===count-1){beep(980,.22);vibrate([60,50,60]);finishDay();return}
+    phase='change';remaining=10;beep(650,.12);vibrate(35);
+  }else{ step++;phase='move';remaining=30;beep(880,.12);vibrate(35) }
+}
+function skip(){ if(phase==='move'){remaining=1;advancePhase()}else{remaining=1;advancePhase()} updateSession() }
+function back(){ if(phase==='change'){phase='move';remaining=30}else if(step>0){step--;phase='move';remaining=30}else{remaining=30} beep(600,.08);updateSession() }
+function togglePause(){ running=!running; if(running){beep(700,.08);lockScreen()} updateSession() }
+function finishDay(){
+  running=false;clearInterval(ticker);wakeLock?.release?.();
+  const c=completed();c[selectedDay]={date:new Date().toISOString(),feel:c[selectedDay]?.feel||null};localStorage.setItem('tip7-complete',JSON.stringify(c));
+  $('session').classList.add('hidden');$('complete').classList.remove('hidden');
+  $('completeEyebrow').textContent=`DAY ${selectedDay+1} COMPLETE`;
+  $('completeTitle').textContent=selectedDay===2?'TIP7 complete.':'You moved.';
+  $('completeCopy').textContent=selectedDay===2?'Three days. Thirty-six movements. One simple test of moving better for golf.':'You invested a few focused minutes in moving better for golf.';
+  const done=Object.keys(c).length;
+  $('summary').innerHTML=`<div class="eyebrow">CHALLENGE PROGRESS</div><h2>${done} / 3 days</h2><p>${selectedDay<2?'Come back for the next day when you are ready.':'Notice what felt easier, what still felt restricted, and whether the final golf turn felt freer.'}</p>`;
+  document.querySelectorAll('.choice').forEach(b=>{b.classList.toggle('selected',c[selectedDay]?.feel===b.dataset.feel);b.onclick=()=>saveFeel(b.dataset.feel)});
+}
+function saveFeel(feel){ const c=completed();c[selectedDay]=c[selectedDay]||{date:new Date().toISOString()};c[selectedDay].feel=feel;localStorage.setItem('tip7-complete',JSON.stringify(c));document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('selected',b.dataset.feel===feel)) }
+function done(){ if(selectedDay<2) selectedDay++;localStorage.setItem('tip7-selected',selectedDay);$('complete').classList.add('hidden');$('home').classList.remove('hidden');renderHome() }
+
+$('startBtn').onclick=startDay;$('pauseBtn').onclick=togglePause;$('skipBtn').onclick=skip;$('backBtn').onclick=back;$('doneBtn').onclick=done;
+$('soundBtn').onclick=()=>{soundOn=!soundOn;localStorage.setItem('tip7-sound',soundOn?'on':'off');renderHome();if(soundOn)beep(820,.08)};
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&running)lockScreen()});
+renderHome();
+</script>
+</body>
+</html>
